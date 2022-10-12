@@ -32,7 +32,7 @@ func Image2ASCII() *cobra.Command {
 			filePath, _ := cmd.Flags().GetString("path")
 			urlPath, _ := cmd.Flags().GetString("url")
 
-			if strings.TrimSpace(filePath) == "" || strings.TrimSpace(urlPath) == "" {
+			if strings.TrimSpace(filePath) == "" && strings.TrimSpace(urlPath) == "" {
 				cmd.Usage()
 				return
 			}
