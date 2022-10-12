@@ -49,10 +49,8 @@ Available Commands:
 
 Flags:
   -h, --help            help for img2ascii
-      --output string   Path to the desaturated image. E.g.: samples/image.png (default "grayscale.png")
       --path string     Path to image file to be converted
       --url string      Image URL to be converted
-      --width int       Width of the output image (default 80)
 
 Use "img2ascii [command] --help" for more information about a command.
 ```

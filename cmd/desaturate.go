@@ -8,42 +8,40 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(Desaturate())
+	rootCmd.AddCommand(desaturateCmd)
 
-	rootCmd.PersistentFlags().String("output", "grayscale.png", "Path to the desaturated image. E.g.: samples/image.png")
+	desaturateCmd.Flags().String("output", "grayscale.png", "Path to the desaturated image. E.g.: samples/image.png")
 
 }
 
-func Desaturate() *cobra.Command {
-	return &cobra.Command{
-		Use:   "desaturate",
-		Short: "Creates a desaturated version of an image",
-		Run: func(cmd *cobra.Command, args []string) {
-			imageSize := converter.ImageSize{}
+var desaturateCmd = &cobra.Command{
+	Use:   "desaturate",
+	Short: "Creates a desaturated version of an image",
+	Run: func(cmd *cobra.Command, args []string) {
+		imageSize := converter.ImageSize{}
 
-			filePath, _ := cmd.Flags().GetString("path")
-			urlPath, _ := cmd.Flags().GetString("url")
-			outputPath, _ := cmd.Flags().GetString("output")
+		filePath, _ := cmd.Flags().GetString("path")
+		urlPath, _ := cmd.Flags().GetString("url")
+		outputPath, _ := cmd.Flags().GetString("output")
 
-			if strings.TrimSpace(filePath) == "" || strings.TrimSpace(urlPath) == "" {
-				cmd.Usage()
-				return
+		if strings.TrimSpace(filePath) == "" || strings.TrimSpace(urlPath) == "" {
+			cmd.Usage()
+			return
+		}
+
+		if filePath != "" {
+			img := converter.ImageFileSystem{
+				FilePath: filePath,
+				Image:    imageSize,
 			}
-
-			if filePath != "" {
-				img := converter.ImageFileSystem{
-					FilePath: filePath,
-					Image:    imageSize,
-				}
-				result, err = img.DesaturateImage(outputPath)
-			} else if urlPath != "" {
-				img := converter.ImageURL{
-					UrlPath: urlPath,
-					Image:   imageSize,
-				}
-				result, err = img.DesaturateImage(outputPath)
+			result, err = img.DesaturateImage(outputPath)
+		} else if urlPath != "" {
+			img := converter.ImageURL{
+				UrlPath: urlPath,
+				Image:   imageSize,
 			}
+			result, err = img.DesaturateImage(outputPath)
+		}
 
-		},
-	}
+	},
 }
