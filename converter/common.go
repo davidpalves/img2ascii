@@ -71,27 +71,3 @@ func getImageFromURL(urlPath string) (image.Image, error) {
 
 	return getImageFromFile(filePath)
 }
-
-func (i ImageURL) ConvertImage() (string, error) {
-	rawImg, err := getImageFromURL(i.UrlPath)
-	if err != nil {
-		return "", fmt.Errorf("%w", err)
-	}
-
-	result := transformToAscii(rawImg, i.Image)
-
-	return string(result), nil
-}
-
-func (i ImageFileSystem) ConvertImage() (string, error) {
-	rawImg, err := getImageFromFile(i.FilePath)
-
-	if err != nil {
-		log.Println("%w", err)
-		return "", err
-	}
-
-	result := transformToAscii(rawImg, i.Image)
-
-	return string(result), nil
-}

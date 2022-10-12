@@ -2,8 +2,10 @@ package converter
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
+	"log"
 	"reflect"
 )
 
@@ -19,11 +21,35 @@ func transformToAscii(rawImg image.Image, imgSize ImageSize) []byte {
 		for j := 0; j < imgSize.Width; j++ {
 			gray := color.GrayModel.Convert(img.At(j, i))
 			y := reflect.ValueOf(gray).FieldByName("Y").Uint()
-			position := int(y * 70 / 255)
+			position := int(y * 69 / 255)
 			_ = buffer.WriteByte(table[position])
 		}
 		_ = buffer.WriteByte('\n')
 	}
 
 	return buffer.Bytes()
+}
+
+func (i ImageURL) ConvertImageToASCII() (string, error) {
+	rawImg, err := getImageFromURL(i.UrlPath)
+	if err != nil {
+		return "", fmt.Errorf("%w", err)
+	}
+
+	result := transformToAscii(rawImg, i.Image)
+
+	return string(result), nil
+}
+
+func (i ImageFileSystem) ConvertImageToASCII() (string, error) {
+	rawImg, err := getImageFromFile(i.FilePath)
+
+	if err != nil {
+		log.Println("%w", err)
+		return "", err
+	}
+
+	result := transformToAscii(rawImg, i.Image)
+
+	return string(result), nil
 }
