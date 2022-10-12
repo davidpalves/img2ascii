@@ -23,11 +23,3 @@ func Execute() {
 		os.Exit(1)
 	}
 }
-
-func init() {
-	rootCmd := &cobra.Command{}
-
-	rootCmd.PersistentFlags().String("url", "", "Image URL to be converted")
-	rootCmd.PersistentFlags().String("path", "", "Path to image file to be converted")
-
-}

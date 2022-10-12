@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/davidpalves/img2ascii/converter"
 	"github.com/spf13/cobra"
@@ -13,7 +14,7 @@ func init() {
 
 	rootCmd.PersistentFlags().String("url", "", "Image URL to be converted")
 	rootCmd.PersistentFlags().String("path", "", "Path to image file to be converted")
-	rootCmd.LocalFlags().Int("width", 80, "Width of the output image")
+	rootCmd.PersistentFlags().Int("width", 80, "Width of the output image")
 
 	rootCmd.MarkFlagsMutuallyExclusive("url", "path")
 }
@@ -30,6 +31,11 @@ func Image2ASCII() *cobra.Command {
 
 			filePath, _ := cmd.Flags().GetString("path")
 			urlPath, _ := cmd.Flags().GetString("url")
+
+			if strings.TrimSpace(filePath) == "" || strings.TrimSpace(urlPath) == "" {
+				cmd.Usage()
+				return
+			}
 
 			if filePath != "" {
 				img := converter.ImageFileSystem{
