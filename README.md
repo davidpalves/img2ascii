@@ -64,6 +64,11 @@ You can check each commands usage as well by typing:
 ```
 
 ### Demo
+Command:
+```shell
+./img2ascii convert --url=https://www.hardwinsoftware.com/blog/wp-content/uploads/2018/02/golang-gopher.png --width=130
+```
+Output:
 
 ```
                                                                                   .^^^..
