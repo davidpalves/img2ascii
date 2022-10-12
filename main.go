@@ -13,6 +13,7 @@ func main() {
 
 	filePath := flag.String("filePath", "", "Path to image file to be converted")
 	urlPath := flag.String("urlPath", "", "image URL to be converted")
+	width := flag.Int("width", 140, "Width of the output")
 
 	flag.Parse()
 
@@ -25,7 +26,7 @@ func main() {
 	}
 
 	if strings.TrimSpace(*urlPath) != "" {
-		ascii, err := converter.ConvertImageFromURL(*urlPath)
+		ascii, err := converter.ConvertImageFromURL(*urlPath, *width)
 		if err != nil {
 			log.Panic("Could not convert image from URL: " + *urlPath)
 		}
@@ -33,7 +34,7 @@ func main() {
 	}
 
 	if strings.TrimSpace(*filePath) != "" {
-		ascii, err := converter.ConvertImageFromFilePath(*filePath)
+		ascii, err := converter.ConvertImageFromFilePath(*filePath, *width)
 		if err != nil {
 			log.Panic("Could not convert image from URL: " + *filePath)
 		}

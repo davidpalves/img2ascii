@@ -54,20 +54,20 @@ func getImageFromURL(urlPath string) (image.Image, error) {
 	return getImageFromFile(filePath)
 }
 
-func ConvertImageFromURL(urlPath string) (string, error) {
+func ConvertImageFromURL(urlPath string, width int) (string, error) {
 	rawImg, err := getImageFromURL(urlPath)
 	if err != nil {
 		return "", fmt.Errorf("%w", err)
 	}
 
-	img, WIDTH, HEIGHT := scaleImage(rawImg, 170)
+	img, WIDTH, HEIGHT := scaleImage(rawImg, width)
 
 	result := transformToAscii(img, WIDTH, HEIGHT)
 
 	return string(result), nil
 }
 
-func ConvertImageFromFilePath(filePath string) (string, error) {
+func ConvertImageFromFilePath(filePath string, width int) (string, error) {
 	rawImg, err := getImageFromFile(filePath)
 
 	if err != nil {
@@ -75,7 +75,7 @@ func ConvertImageFromFilePath(filePath string) (string, error) {
 		return "", err
 	}
 
-	img, width, height := scaleImage(rawImg, 170)
+	img, width, height := scaleImage(rawImg, width)
 
 	result := transformToAscii(img, width, height)
 
