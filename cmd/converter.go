@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var img2asciiCmd = &cobra.Command{
+var converterCmd = &cobra.Command{
 	Use:   "convert",
 	Short: "Converts a given image to ASCII Art",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -50,6 +50,6 @@ var img2asciiCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(img2asciiCmd)
-	img2asciiCmd.Flags().Int("width", 80, "Width of the output image")
+	rootCmd.AddCommand(converterCmd)
+	converterCmd.Flags().Int("width", 80, "Width of the output image")
 }
