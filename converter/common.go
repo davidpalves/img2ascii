@@ -11,12 +11,30 @@ import (
 	"github.com/nfnt/resize"
 )
 
-func scaleImage(img image.Image, width int) (image.Image, int, int) {
+type ImageSize struct {
+	Width  int
+	Height int
+}
+
+type ImageURL struct {
+	Image   ImageSize
+	UrlPath string
+}
+
+type ImageFileSystem struct {
+	Image    ImageSize
+	FilePath string
+}
+
+func (i *ImageSize) scaleImage(img image.Image, width int) image.Image {
 	sz := img.Bounds()
 	height := (sz.Max.Y * width * 10) / (sz.Max.X * 16)
 	img = resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
 
-	return img, width, height
+	i.Height = height
+	i.Width = width
+
+	return img
 }
 
 func getImageFromFile(filePath string) (image.Image, error) {
@@ -54,30 +72,26 @@ func getImageFromURL(urlPath string) (image.Image, error) {
 	return getImageFromFile(filePath)
 }
 
-func ConvertImageFromURL(urlPath string, width int) (string, error) {
-	rawImg, err := getImageFromURL(urlPath)
+func (i ImageURL) ConvertImage() (string, error) {
+	rawImg, err := getImageFromURL(i.UrlPath)
 	if err != nil {
 		return "", fmt.Errorf("%w", err)
 	}
 
-	img, WIDTH, HEIGHT := scaleImage(rawImg, width)
-
-	result := transformToAscii(img, WIDTH, HEIGHT)
+	result := transformToAscii(rawImg, i.Image)
 
 	return string(result), nil
 }
 
-func ConvertImageFromFilePath(filePath string, width int) (string, error) {
-	rawImg, err := getImageFromFile(filePath)
+func (i ImageFileSystem) ConvertImage() (string, error) {
+	rawImg, err := getImageFromFile(i.FilePath)
 
 	if err != nil {
 		log.Println("%w", err)
 		return "", err
 	}
 
-	img, width, height := scaleImage(rawImg, width)
-
-	result := transformToAscii(img, width, height)
+	result := transformToAscii(rawImg, i.Image)
 
 	return string(result), nil
 }

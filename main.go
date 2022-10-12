@@ -9,6 +9,9 @@ import (
 	"github.com/davidpalves/img2ascii/converter"
 )
 
+var result string
+var err error
+
 func main() {
 
 	filePath := flag.String("filePath", "", "Path to image file to be converted")
@@ -25,19 +28,32 @@ func main() {
 		log.Panic("Please insert at least one argument")
 	}
 
+	imageSize := converter.ImageSize{
+		Width:  *width,
+		Height: 0,
+	}
+
 	if strings.TrimSpace(*urlPath) != "" {
-		ascii, err := converter.ConvertImageFromURL(*urlPath, *width)
-		if err != nil {
-			log.Panic("Could not convert image from URL: " + *urlPath)
+		img := converter.ImageURL{
+			UrlPath: *urlPath,
+			Image:   imageSize,
 		}
-		fmt.Print(ascii)
+
+		result, err = img.ConvertImage()
 	}
 
 	if strings.TrimSpace(*filePath) != "" {
-		ascii, err := converter.ConvertImageFromFilePath(*filePath, *width)
-		if err != nil {
-			log.Panic("Could not convert image from URL: " + *filePath)
+		img := converter.ImageFileSystem{
+			FilePath: *filePath,
+			Image:    imageSize,
 		}
-		fmt.Print(ascii)
+
+		result, err = img.ConvertImage()
 	}
+
+	if err != nil {
+		log.Fatal("Could not convert image to ASCII: ", err)
+	}
+
+	fmt.Print(result)
 }

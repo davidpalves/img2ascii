@@ -8,11 +8,11 @@ import (
 	"os"
 )
 
-func TransformImageGrayscale(img image.Image, width, height int) (image.Image, error) {
-	grayScale := image.NewGray(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
+func transformImageGrayscale(img image.Image, imgSize ImageSize) (image.Image, error) {
+	grayScale := image.NewGray(image.Rectangle{image.Point{0, 0}, image.Point{imgSize.Width, imgSize.Height}})
 
-	for x := 0; x < width; x++ {
-		for y := 0; y < height; y++ {
+	for x := 0; x < imgSize.Width; x++ {
+		for y := 0; y < imgSize.Height; y++ {
 			imageColor := img.At(x, y)
 			rr, gg, bb, _ := imageColor.RGBA()
 			r := math.Pow(float64(rr), 2.2)
