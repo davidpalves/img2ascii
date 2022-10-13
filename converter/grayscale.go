@@ -22,7 +22,7 @@ func (i ImageURL) DesaturateImage(output string) (string, error) {
 		return "", err
 	}
 
-	return string(result), nil
+	return result, nil
 }
 
 func (i ImageFileSystem) DesaturateImage(output string) (string, error) {
@@ -39,7 +39,7 @@ func (i ImageFileSystem) DesaturateImage(output string) (string, error) {
 		return "", err
 	}
 
-	return string(result), nil
+	return result, nil
 }
 
 func transformImageGrayscale(img image.Image, output string) (string, error) {

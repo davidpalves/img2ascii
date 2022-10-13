@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var result string
+var result []byte
 var err error
 
 var rootCmd = &cobra.Command{

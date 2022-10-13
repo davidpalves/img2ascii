@@ -9,6 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	rootCmd.AddCommand(converterCmd)
+	converterCmd.Flags().Int("width", 80, "Width of the output image")
+	converterCmd.Flags().String("output", "", "Output ASCII to file")
+}
+
 var converterCmd = &cobra.Command{
 	Use:   "convert",
 	Short: "Converts a given image to ASCII Art",
@@ -21,6 +27,7 @@ var converterCmd = &cobra.Command{
 
 		filePath, _ := cmd.Flags().GetString("path")
 		urlPath, _ := cmd.Flags().GetString("url")
+		outputPath, _ := cmd.Flags().GetString("output")
 
 		if strings.TrimSpace(filePath) == "" && strings.TrimSpace(urlPath) == "" {
 			cmd.Usage()
@@ -45,11 +52,11 @@ var converterCmd = &cobra.Command{
 			log.Panicf("Could not convert image to ASCII")
 		}
 
-		fmt.Print(result)
-	},
-}
+		if strings.TrimSpace(outputPath) != "" {
+			converter.OutputASCIIToFile([]byte(result), outputPath)
+		} else {
+			fmt.Print(string(result))
+		}
 
-func init() {
-	rootCmd.AddCommand(converterCmd)
-	converterCmd.Flags().Int("width", 80, "Width of the output image")
+	},
 }

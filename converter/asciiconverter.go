@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 	"log"
+	"os"
 	"reflect"
 )
 
@@ -30,26 +31,38 @@ func transformToAscii(rawImg image.Image, imgSize ImageSize) []byte {
 	return buffer.Bytes()
 }
 
-func (i ImageURL) ConvertImageToASCII() (string, error) {
+func (i ImageURL) ConvertImageToASCII() ([]byte, error) {
 	rawImg, err := getImageFromURL(i.UrlPath)
 	if err != nil {
-		return "", fmt.Errorf("%w", err)
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	result := transformToAscii(rawImg, i.Image)
 
-	return string(result), nil
+	return result, nil
 }
 
-func (i ImageFileSystem) ConvertImageToASCII() (string, error) {
+func (i ImageFileSystem) ConvertImageToASCII() ([]byte, error) {
 	rawImg, err := getImageFromFile(i.FilePath)
 
 	if err != nil {
 		log.Println("%w", err)
-		return "", err
+		return nil, err
 	}
 
 	result := transformToAscii(rawImg, i.Image)
 
-	return string(result), nil
+	return result, nil
+}
+
+func OutputASCIIToFile(img []byte, output string) {
+	f, err := os.Create(output)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	f.Write(img)
 }

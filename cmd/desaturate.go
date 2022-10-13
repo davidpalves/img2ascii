@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"strings"
 
 	"github.com/davidpalves/img2ascii/converter"
@@ -34,13 +35,17 @@ var desaturateCmd = &cobra.Command{
 				FilePath: filePath,
 				Image:    imageSize,
 			}
-			result, err = img.DesaturateImage(outputPath)
+			_, err = img.DesaturateImage(outputPath)
 		} else if urlPath != "" {
 			img := converter.ImageURL{
 				UrlPath: urlPath,
 				Image:   imageSize,
 			}
-			result, err = img.DesaturateImage(outputPath)
+			_, err = img.DesaturateImage(outputPath)
+		}
+
+		if err != nil {
+			log.Fatal("Could not process image")
 		}
 
 	},
