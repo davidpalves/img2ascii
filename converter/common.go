@@ -3,10 +3,14 @@ package converter
 import (
 	"fmt"
 	"image"
+	"image/jpeg"
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/nfnt/resize"
 )
@@ -38,6 +42,9 @@ func (i *ImageSize) scaleImage(img image.Image, width int) image.Image {
 }
 
 func getImageFromFile(filePath string) (image.Image, error) {
+	var img image.Image
+	var err error
+
 	f, err := os.Open(filePath)
 
 	if err != nil {
@@ -46,9 +53,15 @@ func getImageFromFile(filePath string) (image.Image, error) {
 	}
 
 	defer f.Close()
-	image, _, err := image.Decode(f)
+	fileExt := filepath.Ext(f.Name())
 
-	return image, err
+	if fileExt == ".jpg" {
+		img, err = jpeg.Decode(f)
+	} else if fileExt == ".png" {
+		img, _, err = image.Decode(f)
+	}
+
+	return img, err
 }
 
 func getImageFromURL(urlPath string) (image.Image, error) {
@@ -57,15 +70,21 @@ func getImageFromURL(urlPath string) (image.Image, error) {
 		log.Println("Failed to create temporary directory: %w", err)
 	}
 
-	filePath := fmt.Sprintf("%s/tempImg.png", temp_directory)
-	tempImg, _ := os.Create(filePath)
-	defer tempImg.Close()
+	fileUrl, err := url.Parse(urlPath)
+	path := fileUrl.Path
+	segments := strings.Split(path, "/")
+	fileName := segments[len(segments)-1]
 
 	resp, err := http.Get(urlPath)
 	if err != nil {
 		log.Println("Failed to download image: %w", err)
 	}
 	defer resp.Body.Close()
+
+	filePath := fmt.Sprintf("%s/%s", temp_directory, fileName)
+
+	tempImg, _ := os.Create(filePath)
+	defer tempImg.Close()
 
 	io.Copy(tempImg, resp.Body)
 
